@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <h1 class="title">Tetris</h1>
+        <p id="status" class="status" aria-live="polite">Press Enter to Start</p>
+      </header>
+
+      <main class="game-layout">
+        <aside class="panel panel-hold">
+          <h2 class="panel-title">Hold</h2>
+          <canvas id="hold-canvas" class="preview-canvas" width="168" height="84" aria-hidden="true"></canvas>
+        </aside>
+
+        <section class="board-wrap">
+          <canvas id="game-canvas" class="game-canvas" width="432" height="852" aria-label="Tetris playfield"></canvas>
+        </section>
+
+        <aside class="panel panel-next">
+          <h2 class="panel-title">Next</h2>
+          <canvas id="next-canvas" class="preview-canvas" width="168" height="84" aria-hidden="true"></canvas>
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-label">Score</span>
+              <span id="score" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Level</span>
+              <span id="level" class="stat-value">1</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Lines</span>
+              <span id="lines" class="stat-value">0</span>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <footer class="footer">
+        <div class="controls">
+          <span>Enter Start</span>
+          <span>← → Move</span>
+          <span>↑ / W Rotate</span>
+          <span>↓ Soft drop</span>
+          <span>Space Hard drop</span>
+          <span>C Hold</span>
+          <span>P Pause</span>
+          <span>R Restart</span>
+        </div>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
