@@ -8,10 +8,10 @@ A simple, well-designed Tetris game built for the web. Faithful to classic mecha
 
 - **Classic gameplay** — All 7 tetrominoes (I, O, T, S, Z, J, L), rotation (CW/CCW), soft drop, hard drop, hold piece
 - **Scoring & levels** — 100/300/500/800 per 1/2/3/4 lines; level increases every 10 lines with faster fall speed
-- **Modern UI** — Clean layout, readable typography, responsive design, ghost piece preview
+- **Modern UI** — Clean layout, readable typography, responsive design, ghost piece preview; controls and Music toggle in the left panel to keep the layout compact and avoid scroll
 - **Modular code** — Game logic, renderer, and input are separate; easy to test and extend
 - **Keyboard-first** — Full keyboard support; no install required, runs in the browser
-- **Sound** — Optional Web Audio effects for line clear and hard drop (no external files)
+- **Sound** — Optional Web Audio effects for line clear and hard drop; looping background music when playing; Music toggle to turn BGM off (no external files)
 
 ## Quick Start
 

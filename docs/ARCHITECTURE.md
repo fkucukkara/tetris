@@ -10,9 +10,9 @@ The app is split into four main concerns:
 2. **Renderer** (`renderer.ts`) — Draws the board, piece, ghost, next/hold preview from `GameState`. No game rules.
 3. **Input** (`input.ts`) — Maps keyboard events to `GameAction`s. No direct state mutation.
 4. **Main** (`main.ts`) — Entry point: holds state, runs game loop, dispatches actions to the reducer, calls renderer and updates DOM (score, level, status).
-5. **Audio** (`audio.ts`) — Optional sound effects via Web Audio API (line clear, hard drop). No game state; invoked from main after reducer updates.
+5. **Audio** (`audio.ts`) — Optional sound effects and background music via Web Audio API (line clear, hard drop; looping BGM when playing). No game state; invoked from main after reducer updates. BGM can be toggled off by the user via a Music button; main holds the preference and syncs BGM to game state and that preference.
 
-Data flows in one direction: **Input → Main (dispatch) → Game State → Renderer**. Main triggers audio as a side effect when relevant actions occur (e.g. line clear, hard drop).
+Data flows in one direction: **Input → Main (dispatch) → Game State → Renderer**. Main triggers audio as a side effect when relevant actions occur (e.g. line clear, hard drop) and syncs BGM to status (playing/paused/idle) and user music preference.
 
 ## Modules
 
@@ -58,17 +58,19 @@ Rendering is stateless: given a state, it draws it. It uses `fits()` only to com
 
 ### `audio.ts`
 
-- **Input:** Invoked with no arguments (line clear) or line count / context.
-- **Output:** Side effect only — plays short synthesized tones via Web Audio API. Fails silently if context is not allowed (e.g. autoplay policy).
-- Used by `main.ts` after dispatching actions that cause line clear or hard drop.
+- **Input:** Invoked with no arguments (line clear) or line count / context; BGM is started/stopped/volume-set by main.
+- **Output:** Side effect only — plays short synthesized tones (line clear, hard drop) and optional looping background music via Web Audio API. No external files; all synthesized. Fails silently if context is not allowed (e.g. autoplay policy).
+- **BGM:** `startBGM()`, `stopBGM()`, `setBGMVolume(volume)`. Main calls these based on game status and user music preference (Music toggle). BGM plays only when status is `playing` and user has not turned music off; muted when paused.
+- Used by `main.ts` after dispatching actions that cause line clear or hard drop, and each frame to sync BGM to state and preference.
 
 ### `main.ts`
 
-- Creates initial state.
+- Creates initial state; holds UI preference for BGM (music on/off).
 - Sets up canvas size and gets 2D context.
 - Registers keyboard handler; on action, optionally maps (e.g. P → pause/resume, Enter on game over → restart + start) then dispatches to reducer.
+- Registers Music toggle button; toggles BGM preference and syncs audio.
 - Game loop: `requestAnimationFrame`; when status is `playing`, emits `tick` at intervals based on `getFallDelayMs(state.level)`.
-- After each frame, calls `render()` and updates DOM elements (score, level, lines, status text).
+- After each frame, calls `syncBGM()` (so BGM follows status and user preference), then `render()` and updates DOM elements (score, level, lines, status text).
 
 ## Extensibility
 

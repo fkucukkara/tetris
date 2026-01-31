@@ -9,13 +9,14 @@ import type { GameAction, GameState } from './game';
 import { attachKeyboard } from './input';
 import { render } from './renderer';
 import { getShape, getColor } from './tetrominoes';
-import { playHardDrop, playLineClear } from './audio';
+import { playHardDrop, playLineClear, startBGM, stopBGM, setBGMVolume } from './audio';
 
 const CELL_SIZE = 42;
 const PADDING = 3;
 
 let state: GameState = createInitialState();
 let lastTick = 0;
+let bgmEnabled = true;
 const SCORE_POP_DURATION_MS = 700;
 let scorePopValue = 0;
 let scorePopStartTime = 0;
@@ -161,6 +162,21 @@ function draw(): void {
   updateUI();
 }
 
+function syncBGM(): void {
+  if (!bgmEnabled) {
+    stopBGM();
+    return;
+  }
+  if (state.status === 'playing') {
+    startBGM();
+    setBGMVolume(0.12);
+  } else if (state.status === 'paused') {
+    setBGMVolume(0);
+  } else {
+    stopBGM();
+  }
+}
+
 function gameLoop(now: number): void {
   requestAnimationFrame(gameLoop);
   if (state.status === 'playing' && state.piece) {
@@ -172,7 +188,17 @@ function gameLoop(now: number): void {
   } else {
     lastTick = now;
   }
+  syncBGM();
   draw();
+}
+
+const musicToggle = document.getElementById('music-toggle');
+if (musicToggle) {
+  musicToggle.addEventListener('click', () => {
+    bgmEnabled = !bgmEnabled;
+    musicToggle.setAttribute('aria-pressed', String(bgmEnabled));
+    syncBGM();
+  });
 }
 
 attachKeyboard({

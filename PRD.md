@@ -30,7 +30,7 @@
 - **Start/Pause/Restart:** Clear buttons or shortcuts (e.g., Enter, P, R).
 - **Next piece:** Always visible (small preview).
 - **Score & level:** Always visible (current score, level, lines cleared).
-- **Feedback:** Brief visual/audio cue on line clear and game over (sound optional for v1).
+- **Feedback:** Brief visual/audio cue on line clear and game over. Optional background music when playing; user can turn music off via a Music toggle (sound effects remain).
 - **Responsive:** Playable at a fixed logical resolution (e.g., 10×20 grid) that scales to fit the viewport.
 
 ### 2.3 Design Principles
@@ -89,7 +89,7 @@ tetris/
 
 ## 4. Out of Scope (v1)
 
-- ~~Sound effects / music (can add in v2).~~ *Added in v1: optional Web Audio effects for line clear and hard drop.*
+- ~~Sound effects / music (can add in v2).~~ *Added in v1: optional Web Audio effects for line clear and hard drop; looping background music when playing; Music toggle to turn BGM off (guideline: keep sound optional and user-controllable).*
 - Mobile touch controls (can add in v2).
 - Persisted high scores (localStorage can be added easily later).
 - Animations (e.g., line clear flash, particle effects).

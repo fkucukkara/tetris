@@ -104,6 +104,35 @@ body {
   margin: 0 auto;
 }
 
+.controls-wrap {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--surface-elevated);
+}
+
+.controls-wrap .panel-title {
+  margin-bottom: var(--space-xs);
+}
+
+.controls-list {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  list-style: disc;
+}
+
+.controls-list li {
+  white-space: nowrap;
+}
+
+.panel-actions {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--surface-elevated);
+}
+
 .board-wrap {
   flex-shrink: 0;
 }
@@ -141,22 +170,39 @@ body {
   color: var(--text);
 }
 
-.footer {
-  width: 100%;
-  max-width: 560px;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-md);
+.music-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
   font-size: 0.8rem;
+  font-family: inherit;
   color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--surface-elevated);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
-.controls span {
-  white-space: nowrap;
+.music-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--surface-elevated);
+}
+
+.music-toggle[aria-pressed="false"] {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.music-toggle[aria-pressed="false"] .music-toggle-icon {
+  opacity: 0.5;
+}
+
+.music-toggle-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 @media (max-width: 520px) {
