@@ -9,19 +9,21 @@ export type TetrominoType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
 /** Shape as 4x4 grid: 1 = cell filled, 0 = empty. Each element is a row. */
 export type ShapeMatrix = readonly (readonly number[])[];
 
-/** Single modern block color (all pieces same). */
-export const BLOCK_COLOR = '#94b8d4';
+/** Single accent for all pieces — cyan. */
+const BLOCK_ACCENT = '#22d3ee';
 
-/** Standard colors — all same for modern monochrome look. */
 export const TETROMINO_COLORS: Record<TetrominoType, string> = {
-  I: BLOCK_COLOR,
-  O: BLOCK_COLOR,
-  T: BLOCK_COLOR,
-  S: BLOCK_COLOR,
-  Z: BLOCK_COLOR,
-  J: BLOCK_COLOR,
-  L: BLOCK_COLOR,
+  I: BLOCK_ACCENT,
+  O: BLOCK_ACCENT,
+  T: BLOCK_ACCENT,
+  S: BLOCK_ACCENT,
+  Z: BLOCK_ACCENT,
+  J: BLOCK_ACCENT,
+  L: BLOCK_ACCENT,
 };
+
+/** Default block color (fallback). */
+export const BLOCK_COLOR = TETROMINO_COLORS.I;
 
 /** Shapes in default rotation (index 0). CW rotation = next index. */
 const SHAPES: Record<TetrominoType, ShapeMatrix[]> = {

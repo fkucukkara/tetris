@@ -4,13 +4,13 @@
  */
 
 :root {
-  --bg: #0f0f14;
-  --surface: #1a1b26;
-  --surface-elevated: #242536;
-  --text: #c0caf5;
-  --text-muted: #565f89;
-  --accent: #7aa2f7;
-  --radius: 12px;
+  --bg: #0a0c12;
+  --surface: #11141c;
+  --surface-elevated: #1a1e28;
+  --text: #e2e8f0;
+  --text-muted: #64748b;
+  --accent: #22d3ee;
+  --radius: 14px;
   --radius-sm: 8px;
   --space-xs: 4px;
   --space-sm: 8px;
@@ -19,7 +19,8 @@
   --space-xl: 32px;
   --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(34, 211, 238, 0.12);
 }
 
 *,
@@ -36,7 +37,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background: linear-gradient(160deg, #0a0c12 0%, #0d0f18 50%, #080a10 100%);
   color: var(--text);
   font-family: var(--font-sans);
   display: flex;
@@ -85,6 +86,7 @@ body {
   border-radius: var(--radius);
   padding: var(--space-md);
   box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   min-width: 140px;
 }
 
@@ -99,9 +101,10 @@ body {
 
 .preview-canvas {
   display: block;
-  background: var(--surface-elevated);
+  background: var(--surface);
   border-radius: var(--radius-sm);
   margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .controls-wrap {
@@ -140,8 +143,9 @@ body {
 .game-canvas {
   display: block;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  background: var(--surface);
+  box-shadow: var(--shadow), var(--shadow-glow);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .stats {

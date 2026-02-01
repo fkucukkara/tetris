@@ -7,8 +7,7 @@ import { COLS, LINE_SCORES, ROWS } from './constants';
 import { createInitialState, gameReducer, getFallDelayMs } from './game';
 import type { GameAction, GameState } from './game';
 import { attachKeyboard } from './input';
-import { render } from './renderer';
-import { getShape, getColor } from './tetrominoes';
+import { render, renderNextPiece, renderHoldPiece } from './renderer';
 import { playHardDrop, playLineClear, startBGM, stopBGM, setBGMVolume } from './audio';
 
 const CELL_SIZE = 42;
@@ -59,46 +58,20 @@ function dispatch(action: GameAction): void {
 
 function drawNextPiece(): void {
   if (!nextCtx) return;
-  nextCtx.fillStyle = '#16161e';
-  nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
-  if (!state.nextPiece) return;
-  const smallCell = CELL_SIZE * 0.9;
-  const s = getShape(state.nextPiece, 0);
-  const color = getColor(state.nextPiece);
-  const h = s.length;
-  const w = s[0].length;
-  const ox = (4 - w) * smallCell / 2 + CELL_SIZE * 0.5;
-  const oy = (2 - h) * smallCell / 2 + CELL_SIZE * 0.25;
-  for (let r = 0; r < h; r++) {
-    for (let c = 0; c < w; c++) {
-      if (s[r][c]) {
-        nextCtx.fillStyle = color;
-        nextCtx.fillRect(ox + c * smallCell, oy + r * smallCell, smallCell - 2, smallCell - 2);
-      }
-    }
-  }
+  nextCtx.fillStyle = '#11141c';
+  nextCtx.beginPath();
+  nextCtx.roundRect(0, 0, nextCanvas.width, nextCanvas.height, 8);
+  nextCtx.fill();
+  renderNextPiece(nextCtx, state.nextPiece, CELL_SIZE, PADDING);
 }
 
 function drawHoldPiece(): void {
   if (!holdCtx) return;
-  holdCtx.fillStyle = '#16161e';
-  holdCtx.fillRect(0, 0, holdCanvas.width, holdCanvas.height);
-  if (!state.holdPiece) return;
-  const smallCell = CELL_SIZE * 0.9;
-  const s = getShape(state.holdPiece, 0);
-  const color = getColor(state.holdPiece);
-  const h = s.length;
-  const w = s[0].length;
-  const ox = (4 - w) * smallCell / 2 + CELL_SIZE * 0.5;
-  const oy = (2 - h) * smallCell / 2 + CELL_SIZE * 0.25;
-  for (let r = 0; r < h; r++) {
-    for (let c = 0; c < w; c++) {
-      if (s[r][c]) {
-        holdCtx.fillStyle = color;
-        holdCtx.fillRect(ox + c * smallCell, oy + r * smallCell, smallCell - 2, smallCell - 2);
-      }
-    }
-  }
+  holdCtx.fillStyle = '#11141c';
+  holdCtx.beginPath();
+  holdCtx.roundRect(0, 0, holdCanvas.width, holdCanvas.height, 8);
+  holdCtx.fill();
+  renderHoldPiece(holdCtx, state.holdPiece, CELL_SIZE, PADDING);
 }
 
 function updateUI(): void {
@@ -134,9 +107,9 @@ function drawScorePop(ctx: CanvasRenderingContext2D): void {
 
   // Brief flash overlay when lines clear
   if (elapsed < 120) {
-    const flashAlpha = (1 - elapsed / 120) * 0.25;
+    const flashAlpha = (1 - elapsed / 120) * 0.3;
     ctx.save();
-    ctx.fillStyle = `rgba(148, 184, 212, ${flashAlpha})`;
+    ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
   }
@@ -145,11 +118,14 @@ function drawScorePop(ctx: CanvasRenderingContext2D): void {
   ctx.globalAlpha = alpha;
   ctx.translate(cx, y);
   ctx.scale(scale, scale);
-  ctx.fillStyle = '#94b8d4';
-  ctx.font = 'bold 36px system-ui, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 38px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0, 212, 255, 0.8)';
+  ctx.shadowBlur = 12;
   ctx.fillText(`+${scorePopValue}`, 0, 0);
+  ctx.shadowBlur = 0;
   ctx.restore();
 }
 
