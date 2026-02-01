@@ -47,6 +47,7 @@ export interface GameState {
   linesCleared: number;
   status: GameStatus;
   lastClearedLines: number; // for feedback: number of lines just cleared
+  lastLocked: boolean; // true for one frame when piece merges (for lock SFX)
 }
 
 /** Create an empty board (all zeros). */
@@ -67,6 +68,7 @@ export function createInitialState(): GameState {
     linesCleared: 0,
     status: 'idle',
     lastClearedLines: 0,
+    lastLocked: false,
   };
 }
 
@@ -171,24 +173,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (state.status !== 'idle') return state;
       const next = state.nextPiece;
       const piece = spawnNext(next, state.board);
-      if (!piece) return { ...state, status: 'gameover' };
+      if (!piece) return { ...state, status: 'gameover', lastLocked: false };
       return {
         ...state,
         status: 'playing',
         piece,
         nextPiece: randomType(),
         canHold: true,
+        lastLocked: false,
       };
     }
 
     case 'pause': {
       if (state.status !== 'playing') return state;
-      return { ...state, status: 'paused' };
+      return { ...state, status: 'paused', lastLocked: false };
     }
 
     case 'resume': {
       if (state.status !== 'paused') return state;
-      return { ...state, status: 'playing' };
+      return { ...state, status: 'playing', lastLocked: false };
     }
 
     case 'restart': {
@@ -205,6 +208,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         return {
           ...state,
           piece: { ...state.piece, col: state.piece.col - 1 },
+          lastLocked: false,
         };
       }
       return state;
@@ -217,6 +221,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         return {
           ...state,
           piece: { ...state.piece, col: state.piece.col + 1 },
+          lastLocked: false,
         };
       }
       return state;
@@ -229,6 +234,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         return {
           ...state,
           piece: { ...state.piece, row: state.piece.row + 1 },
+          lastLocked: false,
         };
       }
       // Lock piece
@@ -252,6 +258,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           level: newLevel,
           status: 'gameover',
           lastClearedLines: linesCleared,
+          lastLocked: true,
         };
       }
       return {
@@ -264,6 +271,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         linesCleared: newLines,
         level: newLevel,
         lastClearedLines: linesCleared,
+        lastLocked: true,
       };
     }
 
@@ -272,7 +280,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const rot = (state.piece.rotation + 1) % 4;
       const shape = getShape(state.piece.type, rot);
       if (fits(state.board, shape, state.piece.row, state.piece.col)) {
-        return { ...state, piece: { ...state.piece, rotation: rot } };
+        return { ...state, piece: { ...state.piece, rotation: rot }, lastLocked: false };
       }
       return state;
     }
@@ -282,7 +290,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const rot = (state.piece.rotation + 3) % 4;
       const shape = getShape(state.piece.type, rot);
       if (fits(state.board, shape, state.piece.row, state.piece.col)) {
-        return { ...state, piece: { ...state.piece, rotation: rot } };
+        return { ...state, piece: { ...state.piece, rotation: rot }, lastLocked: false };
       }
       return state;
     }
@@ -311,6 +319,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           level: newLevel,
           status: 'gameover',
           lastClearedLines: linesCleared,
+          lastLocked: true,
         };
       }
       return {
@@ -323,6 +332,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         linesCleared: newLines,
         level: newLevel,
         lastClearedLines: linesCleared,
+        lastLocked: true,
       };
     }
 
@@ -342,7 +352,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
       const shape = getShape(spawnedPiece.type, 0);
       if (!fits(state.board, shape, spawnedPiece.row, spawnedPiece.col)) {
-        return { ...state, status: 'gameover' };
+        return { ...state, status: 'gameover', lastLocked: false };
       }
       return {
         ...state,
@@ -350,6 +360,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         nextPiece: nextPieceAfterHold,
         holdPiece: currentType,
         canHold: false,
+        lastLocked: false,
       };
     }
 

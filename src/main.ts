@@ -8,7 +8,19 @@ import { createInitialState, gameReducer, getFallDelayMs } from './game';
 import type { GameAction, GameState } from './game';
 import { attachKeyboard } from './input';
 import { render, renderNextPiece, renderHoldPiece } from './renderer';
-import { playHardDrop, playLineClear, startBGM, stopBGM, setBGMVolume } from './audio';
+import {
+  playGameOver,
+  playHardDrop,
+  playHold,
+  playLineClear,
+  playLock,
+  playMove,
+  playRotate,
+  playSoftDrop,
+  startBGM,
+  stopBGM,
+  setBGMVolume,
+} from './audio';
 
 const CELL_SIZE = 42;
 const PADDING = 3;
@@ -44,10 +56,34 @@ if (holdCtx) {
 }
 
 function dispatch(action: GameAction): void {
+  const prevState = state;
   const prevScore = state.score;
   state = gameReducer(state, action);
+
   if (action.type === 'hard_drop' && state.status === 'playing') {
     playHardDrop();
+  }
+  if (action.type === 'move_left' || action.type === 'move_right') {
+    if (prevState.piece && state.piece && state.piece.col !== prevState.piece.col) {
+      playMove();
+    }
+  }
+  if (action.type === 'rotate_cw' || action.type === 'rotate_ccw') {
+    if (prevState.piece && state.piece && state.piece.rotation !== prevState.piece.rotation) {
+      playRotate();
+    }
+  }
+  if (action.type === 'move_down' && prevState.piece && state.piece && !state.lastLocked) {
+    if (state.piece.row > prevState.piece.row) playSoftDrop();
+  }
+  if (state.lastLocked && state.lastClearedLines === 0) {
+    playLock();
+  }
+  if (action.type === 'hold' && prevState.holdPiece !== state.holdPiece) {
+    playHold();
+  }
+  if (prevState.status !== 'gameover' && state.status === 'gameover') {
+    playGameOver();
   }
   if (state.score > prevScore && state.lastClearedLines > 0) {
     scorePopValue = LINE_SCORES[state.lastClearedLines] ?? 0;
