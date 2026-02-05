@@ -134,6 +134,9 @@ body {
   margin-top: var(--space-sm);
   padding-top: var(--space-sm);
   border-top: 1px solid var(--surface-elevated);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
 
 .board-wrap {
@@ -174,6 +177,7 @@ body {
   color: var(--text);
 }
 
+.theme-toggle,
 .music-toggle {
   display: inline-flex;
   align-items: center;
@@ -189,6 +193,7 @@ body {
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
+.theme-toggle:hover,
 .music-toggle:hover {
   color: var(--text);
   border-color: var(--accent);
@@ -204,6 +209,7 @@ body {
   opacity: 0.5;
 }
 
+.theme-toggle-icon,
 .music-toggle-icon {
   font-size: 1rem;
   line-height: 1;

@@ -9,21 +9,29 @@ export type TetrominoType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
 /** Shape as 4x4 grid: 1 = cell filled, 0 = empty. Each element is a row. */
 export type ShapeMatrix = readonly (readonly number[])[];
 
-/** Single accent for all pieces — cyan. */
-const BLOCK_ACCENT = '#22d3ee';
+/** Default block accent (cyan). Used until theme is applied. */
+const DEFAULT_BLOCK_ACCENT = '#22d3ee';
+
+/** Current block accent — updated when user changes theme. */
+let currentBlockAccent = DEFAULT_BLOCK_ACCENT;
+
+/** Set the block accent color (used by theme switcher). */
+export function setBlockAccent(hex: string): void {
+  currentBlockAccent = hex;
+}
 
 export const TETROMINO_COLORS: Record<TetrominoType, string> = {
-  I: BLOCK_ACCENT,
-  O: BLOCK_ACCENT,
-  T: BLOCK_ACCENT,
-  S: BLOCK_ACCENT,
-  Z: BLOCK_ACCENT,
-  J: BLOCK_ACCENT,
-  L: BLOCK_ACCENT,
+  I: DEFAULT_BLOCK_ACCENT,
+  O: DEFAULT_BLOCK_ACCENT,
+  T: DEFAULT_BLOCK_ACCENT,
+  S: DEFAULT_BLOCK_ACCENT,
+  Z: DEFAULT_BLOCK_ACCENT,
+  J: DEFAULT_BLOCK_ACCENT,
+  L: DEFAULT_BLOCK_ACCENT,
 };
 
 /** Default block color (fallback). */
-export const BLOCK_COLOR = TETROMINO_COLORS.I;
+export const BLOCK_COLOR = DEFAULT_BLOCK_ACCENT;
 
 /** Shapes in default rotation (index 0). CW rotation = next index. */
 const SHAPES: Record<TetrominoType, ShapeMatrix[]> = {
@@ -82,10 +90,10 @@ export function getShape(type: TetrominoType, rotation: number): ShapeMatrix {
 }
 
 /**
- * Returns the color for a tetromino type.
+ * Returns the color for a tetromino type (uses current theme accent).
  */
-export function getColor(type: TetrominoType): string {
-  return TETROMINO_COLORS[type];
+export function getColor(_type: TetrominoType): string {
+  return currentBlockAccent;
 }
 
 /**

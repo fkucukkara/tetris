@@ -21,6 +21,20 @@ import {
   stopBGM,
   setBGMVolume,
 } from './audio';
+import { setBlockAccent } from './tetrominoes';
+import {
+  getThemeById,
+  getDefaultTheme,
+  getNextThemeId,
+  type Theme,
+} from './themes';
+
+const THEME_STORAGE_KEY = 'tetris-theme';
+
+function hexToRgb(hex: string): [number, number, number] {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
 
 const CELL_SIZE = 42;
 const PADDING = 3;
@@ -28,6 +42,16 @@ const PADDING = 3;
 let state: GameState = createInitialState();
 let lastTick = 0;
 let bgmEnabled = true;
+let currentTheme: Theme = getDefaultTheme();
+
+function applyTheme(theme: Theme): void {
+  currentTheme = theme;
+  document.documentElement.style.setProperty('--accent', theme.accent);
+  document.documentElement.style.setProperty('--shadow-glow', theme.glow);
+  setBlockAccent(theme.accent);
+  const label = document.getElementById('theme-label');
+  if (label) label.textContent = theme.name;
+}
 const SCORE_POP_DURATION_MS = 700;
 let scorePopValue = 0;
 let scorePopStartTime = 0;
@@ -158,7 +182,8 @@ function drawScorePop(ctx: CanvasRenderingContext2D): void {
   ctx.font = 'bold 38px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.shadowColor = 'rgba(0, 212, 255, 0.8)';
+  const [r, g, b] = hexToRgb(currentTheme.accent);
+  ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
   ctx.shadowBlur = 12;
   ctx.fillText(`+${scorePopValue}`, 0, 0);
   ctx.shadowBlur = 0;
@@ -202,6 +227,20 @@ function gameLoop(now: number): void {
   }
   syncBGM();
   draw();
+}
+
+// Apply saved theme or default (cyan) on load
+const savedThemeId = localStorage.getItem(THEME_STORAGE_KEY);
+applyTheme(savedThemeId ? getThemeById(savedThemeId) : getDefaultTheme());
+
+const themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const nextId = getNextThemeId(currentTheme.id);
+    const nextTheme = getThemeById(nextId);
+    applyTheme(nextTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, nextId);
+  });
 }
 
 const musicToggle = document.getElementById('music-toggle');
